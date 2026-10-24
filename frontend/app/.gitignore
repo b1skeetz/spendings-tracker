@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env.local
+.env.*.local
+*.log
+.DS_Store
+src/typed-router.d.ts
+src/components.d.ts

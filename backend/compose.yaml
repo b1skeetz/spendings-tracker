@@ -1,0 +1,47 @@
+﻿services:
+  templatesampleproject:
+    image: templatesampleproject
+    restart: always
+    build:
+      context: .
+      dockerfile: src/TemplateProject.Api/Dockerfile
+      no_cache: true
+    ports:  
+      - "7262:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      TZ: "Asia/Almaty"
+      ConnectionStrings__Database: "Host=template-sample-project-db;Port=5432;Database=template_db;Username=postgres;Password=postgres;Include Error Detail=true"
+      AdminCredentials__Email: "admin@gmail.com"
+      AdminCredentials__Password: "Admin123!"
+      Auth__Issuer: "http://localhost:7262"
+      Auth__Audience: "http://localhost:5205"
+      Auth__Key: "standartsecret_keyfordevelopment!v0_101"
+      Auth__Lifetime: "05:00:00"
+    networks:
+      - template-sample-project-network
+    depends_on:
+      - template-sample-project-db
+  
+  template-sample-project-db:
+    image: postgis/postgis:16-3.4-alpine
+    restart: always
+    environment:
+      TZ: "Asia/Almaty"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    volumes:
+      - template-db-data:/var/lib/postgresql/data
+    ports:
+      - "5860:5432"
+    networks:
+      - template-sample-project-network
+
+networks:
+  template-sample-project-network:
+    driver: bridge
+
+volumes:
+  template-db-data:
+    driver: local
+
